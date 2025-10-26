@@ -84,7 +84,7 @@ export default function EditBlog() {
       const data = await res.json();
 
       if (data.success) {
-        alert("Blog updated successfully!");
+      
         router.push("/dashboard");
       } else {
         setError(data.message || "Failed to update blog.");

@@ -11,6 +11,7 @@
     "db:push": "drizzle-kit push"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.76.1",
     "@uiw/react-md-editor": "^4.0.8",
     "dotenv": "^17.2.3",
     "drizzle-kit": "^0.31.5",
