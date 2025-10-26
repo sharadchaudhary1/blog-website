@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import MDEditor from "@uiw/react-md-editor";
 import { categories } from "@/services/constants";
+import Image from "next/image";
 
 export default function EditBlog() {
   const router = useRouter();
@@ -164,11 +165,14 @@ export default function EditBlog() {
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
           />
           {urlToImage && (
-            <img
-              src={urlToImage}
-              alt="Preview"
-              className="mt-3 w-48 rounded-lg border border-gray-300"
-            />
+          
+               <Image
+                 src={urlToImage}
+                 alt="Preview"
+                 width={192} 
+                 height={192}
+                 className="mt-3 rounded-lg border border-gray-300 object-cover"
+               />
           )}
         </div>
 

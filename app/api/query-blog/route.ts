@@ -32,13 +32,13 @@ export async function GET(req:NextRequest){
   
 
 }
- catch (error:any) {
-    console.error("Error fetching blogs:", error.message);
+ catch (error) {
+    console.error("Error fetching blogs:", error);
     return NextResponse.json(
       {
         success: false,
         message: "Server error while searching blogs",
-        error: error.message,
+        error: error,
       },
       { status: 500 }
     );

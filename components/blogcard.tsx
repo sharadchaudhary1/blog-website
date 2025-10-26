@@ -14,6 +14,7 @@ const BlogCard = ({ blog }: { blog: Blog }) => {
 
   //get user by using a zustand 
     const { user } = useUserStore();
+    
 
 
   const formatDate = (date: Date) =>

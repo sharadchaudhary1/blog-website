@@ -1,7 +1,7 @@
 
 import { NextResponse } from "next/server";
 import { eq } from "drizzle-orm";
-import { blogs, users } from "@/db/schema";
+import { blogs } from "@/db/schema";
 import GetCurrentUser from "@/services/get-current-user";
 import { db } from "@/db/client";
 

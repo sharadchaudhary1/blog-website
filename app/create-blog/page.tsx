@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import MDEditor from "@uiw/react-md-editor";
 import { categories } from "@/services/constants";
+import Image from "next/image";
 
 
 export default function CreateBlog() {
@@ -70,20 +71,7 @@ export default function CreateBlog() {
       )}
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Author */}
-        {/* <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Author *
-          </label>
-          <input
-            type="text"
-            value={author}
-            onChange={(e) => setAuthor(e.target.value)}
-            required
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-            placeholder="Enter author name"
-          />
-        </div> */}
+   
 
         {/* Title */}
         <div>
@@ -147,11 +135,14 @@ export default function CreateBlog() {
             placeholder="https://example.com/image.jpg"
           />
           {urlToImage && (
-            <img
-              src={urlToImage}
-              alt="Preview"
-              className="mt-3 w-48 rounded-lg border border-gray-300"
-            />
+           
+                <Image
+                  src={urlToImage}
+                  alt="Preview"
+                  width={192} 
+                  height={192} 
+                  className="mt-3 rounded-lg border border-gray-300 object-cover"
+                />
           )}
         </div>
 

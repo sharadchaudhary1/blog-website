@@ -19,7 +19,7 @@ export async function POST(req:NextRequest){
    try{
 
        const [user]=await db.select().from(users).where(eq(users.email,email))
-       const token =generateToken({email:user?.email})
+       const token =generateToken(user?.email)
        
        const res= NextResponse.json({
             success:true,
@@ -28,8 +28,8 @@ export async function POST(req:NextRequest){
         res.cookies.set('token',token)
         return res
    }
-   catch(error:any){
-    console.log(error.message)
+   catch(error){
+    console.log(error)
     return NextResponse.json({success:false})
    }
 

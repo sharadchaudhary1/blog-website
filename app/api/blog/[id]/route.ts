@@ -1,25 +1,27 @@
+
+
+import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db/client";
 import { blogs } from "@/db/schema/blog";
 import { eq } from "drizzle-orm";
-import { NextRequest, NextResponse } from "next/server";
+
+type RouteParams = {
+  params: Promise<{ id: string }>;
+};
 
 
-export async function GET(
-  req: NextRequest,
-  { params }: { params: { id?: string } }
-) {
-  
-    const id = params.id 
+export async function GET(req: NextRequest, { params }: RouteParams) {
+  const { id } = await params; 
 
-    if (!id ) {
-      return NextResponse.json(
-        { success: false, message: "Invalid or missing blog ID" },
-        { status: 400 }
-      );
-    }
+  if (!id) {
+    return NextResponse.json(
+      { success: false, message: "Missing blog ID" },
+      { status: 400 }
+    );
+  }
 
-    try{
-    const result = await db.select().from(blogs).where(eq(blogs.id, id));
+  try {
+    const result = await db.select().from(blogs).where(eq(blogs.id, Number(id)));
     const blog = result[0];
 
     if (!blog) {
@@ -29,12 +31,9 @@ export async function GET(
       );
     }
 
-    return NextResponse.json({
-      success: true,
-      data: blog,
-    });
+    return NextResponse.json({ success: true, data: blog });
   } catch (error) {
-    console.error("Error fetching blog:", error.message);
+    console.error("Error fetching blog:", error);
     return NextResponse.json(
       { success: false, message: "Server error" },
       { status: 500 }
@@ -43,13 +42,39 @@ export async function GET(
 }
 
 
+export async function DELETE(req: NextRequest, { params }: RouteParams) {
+  const { id } = await params;
 
-export async function DELETE(req: Request, { params }: { params: { id: string } }) {
+  if (!id) {
+    return NextResponse.json(
+      { success: false, message: "Missing blog ID" },
+      { status: 400 }
+    );
+  }
+
   try {
-    await db.delete(blogs).where(eq(blogs.id, Number(params.id)));
-    return NextResponse.json({ success: true, message: "Blog deleted" });
+    const deleted = await db
+      .delete(blogs)
+      .where(eq(blogs.id, Number(id)))
+      .returning({ id: blogs.id });
+
+    if (deleted.length === 0) {
+      return NextResponse.json(
+        { success: false, message: "Blog not found" },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json({
+      success: true,
+      message: "Blog deleted successfully",
+      deletedId: deleted[0].id,
+    });
   } catch (error) {
     console.error("Error deleting blog:", error);
-    return NextResponse.json({ success: false, message: "Failed to delete blog" }, { status: 500 });
+    return NextResponse.json(
+      { success: false, message: "Failed to delete blog" },
+      { status: 500 }
+    );
   }
 }

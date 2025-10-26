@@ -69,7 +69,7 @@ export default async function BlogPage({ params }:{params :{id?:string}}) {
 
           <p className="whitespace-pre-line">{blog.content}</p>
         </div>
-            <Comments blogId={blog.id} userId={user?.id} />
+            <Comments blogId={blog.id} userId={user?.id??null} />
       
       </article>
       <Footer/>

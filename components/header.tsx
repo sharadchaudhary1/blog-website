@@ -5,7 +5,8 @@ import { LogOut, PlusCircle, Search, User } from "lucide-react";
 import Link from "next/link";
 import SignOut from "./signout-button";
 import GetCurrentUser from "@/services/get-current-user";
-import { useUserStore } from "@/store/useUserStore";
+
+
 
 
 export default function Header() {

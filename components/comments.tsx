@@ -1,6 +1,8 @@
+
+
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 
 type User = {
   id: string;
@@ -29,38 +31,37 @@ export default function Comments({
   const [loading, setLoading] = useState(false);
   const [posting, setPosting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  
 
-  // Fetch comments for the blogId
-  const fetchComments = async () => {
+  //  Wrapped in useCallback to fix  missing dependency warning
+  const fetchComments = useCallback(async () => {
     setLoading(true);
     setError(null);
 
     try {
       const res = await fetch(`/api/comments?blogId=${encodeURIComponent(String(blogId))}`, {
         method: "GET",
-      
       });
 
-      const body = await res.json();
+      const body: { success: boolean; data?: CommentItem[] } = await res.json();
+
       if (body.success && Array.isArray(body.data)) {
         setComments(body.data);
       } else {
         setComments([]);
       }
-    } catch (err: any) {
+    } catch (err) {
       console.error("Error fetching comments:", err);
-      setError(err?.message || "Unable to load comments");
+      const message =
+        err instanceof Error ? err.message : "Unable to load comments";
+      setError(message);
     } finally {
       setLoading(false);
     }
-  };
+  }, [blogId]);
 
   useEffect(() => {
     fetchComments();
-
-  }, [blogId]);
-
+  }, [fetchComments]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -88,17 +89,19 @@ export default function Comments({
         }),
       });
 
+      const body: { success: boolean; message?: string } = await res.json();
 
-      const body = await res.json();
       if (!body.success) {
         throw new Error(body.message || "Failed to post comment");
       }
 
       setNewComment("");
       await fetchComments();
-    } catch (err: any) {
+    } catch (err) {
       console.error("Error posting comment:", err);
-      setError(err?.message || "Failed to post comment");
+      const message =
+        err instanceof Error ? err.message : "Failed to post comment";
+      setError(message);
     } finally {
       setPosting(false);
     }
@@ -131,14 +134,17 @@ export default function Comments({
       {loading ? (
         <div className="text-sm text-gray-500">Loading comments...</div>
       ) : comments.length === 0 ? (
-        <p className="text-sm text-gray-500">No comments yet. Be the first to comment!</p>
+        <p className="text-sm text-gray-500">
+          No comments yet. Be the first to comment!
+        </p>
       ) : (
         <div className="space-y-4">
           {comments.map((c) => (
             <div key={c.id} className="bg-gray-100 p-3 rounded-lg">
               <p className="text-sm text-gray-800">{c.content}</p>
               <p className="text-xs text-gray-500 mt-1">
-                — {c.user?.name || "Anonymous"}, {new Date(c.createdAt).toLocaleString()}
+                — {c.user?.name || "Anonymous"},{" "}
+                {new Date(c.createdAt).toLocaleString()}
               </p>
             </div>
           ))}

@@ -5,7 +5,6 @@ import HeroSection from "@/components/hero-section";
 import Pagination from "@/components/pagination";
 import { categories } from "@/services/constants";
 import { useSession } from "next-auth/react";
-import Image from "next/image";
 import { useEffect, useState } from "react";
 
 export default function Home() {

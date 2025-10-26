@@ -21,7 +21,7 @@ export async function GET() {
       .orderBy(blogs.createdAt);
 
     return NextResponse.json({ success: true, data: userBlogs });
-  } catch (error: any) {
+  } catch (error) {
     console.error("Error fetching user blogs:", error);
     return NextResponse.json({ success: false, message: "Server error" }, { status: 500 });
   }
