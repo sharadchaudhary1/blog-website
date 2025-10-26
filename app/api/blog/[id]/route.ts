@@ -1,5 +1,6 @@
 
 
+
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db/client";
 import { blogs } from "@/db/schema/blog";
@@ -8,7 +9,6 @@ import { eq } from "drizzle-orm";
 type RouteParams = {
   params: Promise<{ id: string }>;
 };
-
 
 export async function GET(req: NextRequest, { params }: RouteParams) {
   const { id } = await params; 
@@ -40,7 +40,6 @@ export async function GET(req: NextRequest, { params }: RouteParams) {
     );
   }
 }
-
 
 export async function DELETE(req: NextRequest, { params }: RouteParams) {
   const { id } = await params;

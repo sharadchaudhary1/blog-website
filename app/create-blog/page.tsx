@@ -1,3 +1,6 @@
+
+
+
 "use client";
 
 import { useState } from "react";
@@ -5,7 +8,6 @@ import { useRouter } from "next/navigation";
 import MDEditor from "@uiw/react-md-editor";
 import { categories } from "@/services/constants";
 import Image from "next/image";
-
 
 export default function CreateBlog() {
   const router = useRouter();
@@ -18,7 +20,7 @@ export default function CreateBlog() {
   const [sourceName, setSourceName] = useState("");
   const [sourceId, setSourceId] = useState("");
   const [showPreview, setShowPreview] = useState(false);
-  const [category, setCategory] = useState("")
+  const [category, setCategory] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -45,17 +47,14 @@ export default function CreateBlog() {
         method: "POST",
         body: JSON.stringify(blogdata),
       });
-     const data=await res.json()
-     if(data.success){
-        alert('blog cretaed successfully')
-     }
-     else{
-       setError(data.message)
-     }
-
-   
-    } 
-     finally {
+      const data = await res.json();
+      if (data.success) {
+        alert('Blog created successfully');
+        router.push('/dashboard');
+      } else {
+        setError(data.message);
+      }
+    } finally {
       setIsLoading(false);
     }
   };
@@ -71,8 +70,6 @@ export default function CreateBlog() {
       )}
 
       <form onSubmit={handleSubmit} className="space-y-6">
-   
-
         {/* Title */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -103,7 +100,8 @@ export default function CreateBlog() {
           />
         </div>
 
-         <div>
+        {/* Category */}
+        <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Category *
           </label>
@@ -125,7 +123,7 @@ export default function CreateBlog() {
         {/* Image URL */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Featured Image URL 
+            Featured Image URL
           </label>
           <input
             type="url"
@@ -135,14 +133,13 @@ export default function CreateBlog() {
             placeholder="https://example.com/image.jpg"
           />
           {urlToImage && (
-           
-                <Image
-                  src={urlToImage}
-                  alt="Preview"
-                  width={192} 
-                  height={192} 
-                  className="mt-3 rounded-lg border border-gray-300 object-cover"
-                />
+            <Image
+              src={urlToImage}
+              alt="Preview"
+              width={192} 
+              height={192} 
+              className="mt-3 rounded-lg border border-gray-300 object-cover"
+            />
           )}
         </div>
 
@@ -157,7 +154,7 @@ export default function CreateBlog() {
               value={sourceName}
               onChange={(e) => setSourceName(e.target.value)}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-              placeholder="e.g. Medium, Times of India,e.t.c"
+              placeholder="e.g. Medium, Times of India, etc"
             />
           </div>
         </div>
@@ -166,7 +163,7 @@ export default function CreateBlog() {
         <div>
           <div className="flex items-center justify-between mb-2">
             <label className="text-sm font-medium text-gray-700">
-              Content 
+              Content
             </label>
             <button
               type="button"
@@ -181,7 +178,7 @@ export default function CreateBlog() {
             <div className={showPreview ? "" : "lg:col-span-2"}>
               <MDEditor
                 value={content}
-                onChange={setContent}
+                onChange={(val) => setContent(val || "")}
                 height={400}
                 preview={showPreview ? "preview" : "edit"}
               />
@@ -220,4 +217,3 @@ export default function CreateBlog() {
     </div>
   );
 }
-

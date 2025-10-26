@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import { useEffect, useState } from "react";
@@ -9,7 +10,8 @@ import Image from "next/image";
 
 export default function EditBlog() {
   const router = useRouter();
-  const { id } = useParams();
+  const params = useParams();
+  const id = params.id;
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -49,7 +51,9 @@ export default function EditBlog() {
       }
     };
 
-    fetchBlog();
+    if (id) {
+      fetchBlog();
+    }
   }, [id]);
 
   // Submit edited blog
@@ -165,14 +169,13 @@ export default function EditBlog() {
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
           />
           {urlToImage && (
-          
-               <Image
-                 src={urlToImage}
-                 alt="Preview"
-                 width={192} 
-                 height={192}
-                 className="mt-3 rounded-lg border border-gray-300 object-cover"
-               />
+            <Image
+              src={urlToImage}
+              alt="Preview"
+              width={192} 
+              height={192}
+              className="mt-3 rounded-lg border border-gray-300 object-cover"
+            />
           )}
         </div>
 
@@ -195,7 +198,7 @@ export default function EditBlog() {
             <div className={showPreview ? "" : "lg:col-span-2"}>
               <MDEditor
                 value={content}
-                onChange={setContent}
+                onChange={(val) => setContent(val || "")}
                 height={400}
                 preview={showPreview ? "preview" : "edit"}
               />

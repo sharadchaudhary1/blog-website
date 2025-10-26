@@ -1,27 +1,32 @@
 
-
 import Image from "next/image";
 import Header from "@/components/header";
 import GetCurrentUser from "@/services/get-current-user";
 import Comments from "@/components/comments";
 import Footer from "@/components/footer";
 
-export default async function BlogPage({ params }:{params :{id?:string}}) {
-  const id = params.id
+type PageProps = {
+  params: Promise<{ id: string }>;
+};
 
-  const res=await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/blog/${id}`)
-  const data=await res.json()
-  const blog=data.data
+export default async function BlogPage({ params }: PageProps) {
+  const { id } = await params;
 
-  const user=await GetCurrentUser()
-  console.log(user)
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/blog/${id}`, {
+    cache: 'no-store'
+  });
+  const data = await res.json();
+  const blog = data.data;
+
+  const user = await GetCurrentUser();
+  console.log(user);
      
   return (
     <div className="bg-gray-50 min-h-screen">
       <Header />
 
       <article className="max-w-4xl mx-auto py-10 px-6">
-
+        {/* Blog Header */}
         <div className="text-center mb-10">
           <h1 className="text-3xl sm:text-5xl font-bold text-gray-900 leading-snug">
             {blog.title}
@@ -69,10 +74,11 @@ export default async function BlogPage({ params }:{params :{id?:string}}) {
 
           <p className="whitespace-pre-line">{blog.content}</p>
         </div>
-            <Comments blogId={blog.id} userId={user?.id??null} />
-      
+        
+        <Comments blogId={blog.id} userId={user?.id ?? null} />
       </article>
-      <Footer/>
+      
+      <Footer />
     </div>
   );
 }

@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useEffect, useState } from "react";
@@ -6,33 +7,33 @@ import Link from "next/link";
 import SignOut from "./signout-button";
 import GetCurrentUser from "@/services/get-current-user";
 
-
-
+type UserType = {
+  id: string;
+  name: string;
+  email: string;
+  image: string | null;
+  createdAt: Date;
+} | null | undefined;
 
 export default function Header() {
   const [query, setQuery] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const[user,setUser]=useState('')
-
-
+  const [user, setUser] = useState<UserType>(null);
 
   const toggleDropdown = () => {
     setIsDropdownOpen((prev) => !prev);
   };
 
-   useEffect(()=>{
-        async function getcurrentuser(){
-            const user=await GetCurrentUser()
-    
-            setUser(user)
-        }
-        getcurrentuser()
-      },[])
-    
-
+  useEffect(() => {
+    async function getCurrentUser() {
+      const user = await GetCurrentUser();
+      setUser(user ?? null);
+    }
+    getCurrentUser();
+  }, []);
 
   return (
-    <header className="sticky top-0 z-50 bg-white ">
+    <header className="sticky top-0 z-50 bg-white">
       <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-3">
         {/* Logo */}
         <Link href="/" className="flex items-center space-x-2">
@@ -43,9 +44,10 @@ export default function Header() {
 
         {/* Search */}
         <form 
-        action='/query-blog'
-        method="GET"
-        className="flex items-center bg-gray-100 rounded-full px-4 py-2 w-[300px]">
+          action='/query-blog'
+          method="GET"
+          className="flex items-center bg-gray-100 rounded-full px-4 py-2 w-[300px]"
+        >
           <Search className="text-gray-500 w-5 h-5" />
           <input
             type="text"
@@ -57,27 +59,24 @@ export default function Header() {
           />
         </form>
 
-       
         <div className="flex items-center space-x-4">
-
-          {
-            user ? <Link
-            href="/create-blog"
-            className="bg-orange-600 flex  hover:bg-orange-700 text-white px-4 py-2 rounded-2xl text-sm font-medium transition"
-          >
-            <PlusCircle height={15} className="mt-0.5" />
-           <span> Create Blog</span>
-          </Link> : <Link
-            href="/login"
-            className="bg-orange-600 flex  hover:bg-orange-700 text-white px-4 py-2 rounded-2xl text-sm font-medium transition"
-          >
-             <PlusCircle height={15} className="mt-0.5" /> 
-           <span>Create Blog</span> 
-          </Link>
-
-          }     
-
-      
+          {user ? (
+            <Link
+              href="/create-blog"
+              className="bg-orange-600 flex hover:bg-orange-700 text-white px-4 py-2 rounded-2xl text-sm font-medium transition"
+            >
+              <PlusCircle height={15} className="mt-0.5" />
+              <span>Create Blog</span>
+            </Link>
+          ) : (
+            <Link
+              href="/login"
+              className="bg-orange-600 flex hover:bg-orange-700 text-white px-4 py-2 rounded-2xl text-sm font-medium transition"
+            >
+              <PlusCircle height={15} className="mt-0.5" /> 
+              <span>Create Blog</span> 
+            </Link>
+          )}     
 
           <Link
             href="/login"
@@ -93,9 +92,8 @@ export default function Header() {
             Get Started
           </Link>
 
-          {/*  Profile */}
+          {/* Profile */}
           <div className="relative">
-        
             <button
               onClick={toggleDropdown}
               className="w-9 h-9 rounded-full overflow-hidden border border-gray-300 flex items-center justify-center cursor-pointer"
@@ -121,10 +119,10 @@ export default function Header() {
                   Dashboard
                 </Link>
                 <button
-                  className=" flex gap-3 w-full text-left px-4 py-2 text-sm hover:bg-gray-100 text-gray-600"
+                  className="flex gap-3 w-full text-left px-4 py-2 text-sm hover:bg-gray-100 text-gray-600"
                   onClick={() => setIsDropdownOpen(false)}
                 >
-                   <SignOut/>
+                  <SignOut />
                   <LogOut className="w-4 h-4 text-gray-800" />
                 </button>
               </div>

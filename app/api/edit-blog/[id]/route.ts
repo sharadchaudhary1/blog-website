@@ -1,13 +1,19 @@
 
 
-import { NextRequest, NextResponse } from "next/server";
 
+import { NextRequest, NextResponse } from "next/server";
 import { eq } from "drizzle-orm";
 import { blogs } from "@/db/schema";
 import { db } from "@/db/client";
 
-export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
+type RouteParams = {
+  params: Promise<{ id: string }>;
+};
+
+export async function PUT(req: NextRequest, { params }: RouteParams) {
   try {
+    // Await the params promise
+    const { id } = await params;
     const body = await req.json();
 
     await db.update(blogs)
@@ -19,7 +25,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
         urlToImage: body.urlToImage,
         source: body.source,
       })
-      .where(eq(blogs.id, Number(params.id)));
+      .where(eq(blogs.id, Number(id)));
 
     return NextResponse.json({ success: true });
   } catch (error) {
@@ -27,5 +33,3 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
     return NextResponse.json({ success: false, message: "Failed to update blog" }, { status: 500 });
   }
 }
-
-
